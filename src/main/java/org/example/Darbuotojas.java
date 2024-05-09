@@ -3,6 +3,10 @@ package org.example;
 public class Darbuotojas extends DataBaseTableObject{
     public String vardasPavarde;
 
+    public Darbuotojas(){
+        super(0);
+    }
+
     public Darbuotojas(int id, String vardasPavarde) {
         super(id);
         this.vardasPavarde = vardasPavarde;

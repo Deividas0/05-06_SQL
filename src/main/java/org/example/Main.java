@@ -3,6 +3,9 @@ package org.example;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -18,6 +21,7 @@ public class Main {
         DBManager dbManager = new DatabaseManager(URL, USERNAME, PASSWORD);
         veiksmas(dbManager);
     }
+
     public static Klientas sukurtiKlienta() {
         System.out.println("Įveskite vardą:");
         sc.nextLine();
@@ -41,10 +45,14 @@ public class Main {
         System.out.println("4. Sukurti nauja paslauga.");
         System.out.println("5. Pridėti nauja darbuotoją.");
         System.out.println("6. Patikrinti darbuotojų sąrašą.");
+        System.out.println("7. paslaugosNaudojimas.");
+        System.out.println("8. Patikrinti mokėjimus.");
+        System.out.println("9. Registruoti vizitą.");
+        System.out.println("10. Patikrinti artimiausia vizitą.");
+        System.out.println("11. Patikrinti artimiausia vizitą pagal kliento ID.");
         switch (sc.nextInt()) {
             case 1:
                 System.out.println("Šiuo metu saraše esantys klientai");
-                dbManager.klientuSarasas();
                 List<Klientas> spausdinamSarasa = dbManager.klientuSarasas();
                 for (Klientas a : spausdinamSarasa) {
                     System.out.println(a);
@@ -85,6 +93,112 @@ public class Main {
                 }
                 System.out.println();
                 veiksmas(dbManager);
+            case 7:
+                System.out.println("Pasirinkite kliento ID: ");
+                spausdinamSarasa = dbManager.klientuSarasas();
+                for (Klientas a : spausdinamSarasa) {
+                    System.out.println(a);
+                }
+                int klientas = sc.nextInt();            // turime kliento ID
+                Klientas pasirinkitasKlientas = new Klientas();
+                for (Klientas a : spausdinamSarasa) {
+                    if (a.id == klientas) {
+                        pasirinkitasKlientas = a;
+                        break;
+                    }
+                }
+
+                System.out.println("Pasirinkite darbuotojo ID: ");
+                spausdinamDarbuotojus = dbManager.darbuotojuSarasas();
+                for (Darbuotojas a : spausdinamDarbuotojus) {
+                    System.out.println(a);
+                }
+                int darbuotojas = sc.nextInt();                   // turime darbuotojo ID
+                Darbuotojas pasirinktasDarbuotojas = new Darbuotojas();
+                for (Darbuotojas a : spausdinamDarbuotojus) {
+                    if (a.id == darbuotojas) {
+                        pasirinktasDarbuotojas = a;
+                    }
+                }
+
+                System.out.println("Pasirinkite paslaugos ID: ");
+                List<Paslauga> paslauguSarasas = dbManager.paslauguSarasas();
+                for (Paslauga a : paslauguSarasas) {
+                    System.out.println(a);
+                }
+                int paslauga = sc.nextInt();                        // turime paslaugos ID
+                Paslauga pasirinktaPaslauga = new Paslauga();
+                for (Paslauga a : paslauguSarasas) {
+                    if (a.id == paslauga) {
+                        pasirinktaPaslauga = a;
+                    }
+                }
+
+                System.out.println("Įveskite sumą: ");
+                double suma = sc.nextDouble();
+                dbManager.paslaugosNaudojimas(pasirinkitasKlientas, pasirinktasDarbuotojas, pasirinktaPaslauga, suma);
+                System.out.println();
+                veiksmas(dbManager);
+            case 8:
+                System.out.println("Visi mokėjimai");
+                List<Mokejimas> mokejimuSarasas = dbManager.mokejimuSarasas();
+                for (Mokejimas a : mokejimuSarasas) {
+                    System.out.println(a);
+                }
+                System.out.println();
+                veiksmas(dbManager);
+            case 9:
+                System.out.println("Pasirinkite kliento ID: ");
+                spausdinamSarasa = dbManager.klientuSarasas();
+                for (Klientas a : spausdinamSarasa) {
+                    System.out.println(a);
+                }
+                klientas = sc.nextInt();                        // turime kliento ID
+                pasirinkitasKlientas = new Klientas();
+                for (Klientas a : spausdinamSarasa) {
+                    if (a.id == klientas) {
+                        pasirinkitasKlientas = a;
+                        break;
+                    }
+
+                }
+                System.out.println("Pasirinkite paslaugos ID: ");
+                paslauguSarasas = dbManager.paslauguSarasas();
+                for (Paslauga a : paslauguSarasas) {
+                    System.out.println(a);
+                }
+                paslauga = sc.nextInt();                        // turime paslaugos ID
+                pasirinktaPaslauga = new Paslauga();
+                for (Paslauga a : paslauguSarasas) {
+                    if (a.id == paslauga) {
+                        pasirinktaPaslauga = a;
+                    }
+                }
+                System.out.println("Įveskite norima rezervuoti laiką yyyy-MM-dd HH:mm:ss");
+                sc.nextLine();
+                LocalDateTime data = LocalDateTime.parse(sc.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                dbManager.naujasVizitas(pasirinkitasKlientas, pasirinktaPaslauga, data);
+
+                System.out.println();
+                veiksmas(dbManager);
+            case 10:
+                System.out.println("Artimiausias vizitas: ");
+                List<Vizitai> artimiausiasVizitas = dbManager.artimiausiasVizitas();
+                for (Vizitai a : artimiausiasVizitas) {
+                    System.out.println(a);
+                }
+                System.out.println();
+                veiksmas(dbManager);
+            case 11:
+                System.out.println("Įveskite kliento ID pagal kurį norite patikrinti artimiausia vizito datą.");
+                sc.nextLine();
+                int klientoId = sc.nextInt();
+                for (Vizitai a : dbManager.artimiausiasVizitasPagalKlientoId(klientoId)) {
+                    System.out.println(a);
+                }
+                System.out.println();
+                veiksmas(dbManager);
+
 
         }
     }

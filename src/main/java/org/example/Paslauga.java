@@ -7,6 +7,10 @@ public class Paslauga extends DataBaseTableObject{
         super(0);
     }
 
+    public Paslauga(int id, String paslaugosPavadinimas) {
+        super(id);
+        this.paslaugosPavadinimas = paslaugosPavadinimas;
+    }
 
     @Override
     public String toString(){

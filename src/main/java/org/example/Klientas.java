@@ -7,6 +7,10 @@ public class Klientas extends DataBaseTableObject{
     public String registracijosData;
     public boolean VIP;
 
+    public Klientas() {
+        super(0);
+    }
+
     public Klientas(String vardas, String pavarde, String gimimoData, boolean VIP) {
         super(0);
         this.vardas = vardas;
@@ -28,4 +32,5 @@ public class Klientas extends DataBaseTableObject{
         return "Kliento ID: " +id+". Kliento vardas ir pavardė - " + vardas+" "+pavarde+". Gimimo data: " +
                 gimimoData + ". Registracijos data: " + registracijosData + ". Ar asmuo yra VIP?: " + VIP;
     }
+
 }
